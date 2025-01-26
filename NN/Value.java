@@ -4,36 +4,41 @@ import java.lang.Math;
 public class Value{
     double data;
     double grad;
+    String label;
     
-    public Value (double data){
+    public Value (double data, String label){
         this.data = data;
+        this.label = label;
     }
 
     @Override
     public String toString(){
-        return "Value(Data)=" + String.format("%.4f", data);
+        return this.label + "=" + String.format("%.4f", data);
     }
 
-    public Value add(Value a){
-        return new Value(this.data + a.data);
+    public double add(Value a){
+        
+        return this.data + a.data;
     }
-    public Value sub(Value a){
-        return new Value(this.data - a.data);
+    public double sub(Value a){
+        return this.data - a.data;
     }
-    public Value mul(Value a){
-        return new Value(this.data * a.data);
+    public double mul(Value a){
+        return this.data * a.data;
     }
-    public Value div(Value a){
+    public double div(Value a){
         if (a.data == 0){
             System.out.println("Error: Division by zero is not possible.");
-            return null;
+            return 0;
         }
-        return new Value(this.data/a.data);
+        return this.data/a.data;
     }
     
-    public Value tanh(){
+    public double tanh(){
         double a = this.data;
         double res = (Math.exp(a*2)-1)/(Math.exp(a*2)+1);
-        return new Value(res);
+        return res;
     }
+
+
 }
