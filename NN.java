@@ -1,4 +1,5 @@
 import NN.Value;
+import java.util.ListIterator;
 
 public class NN {
     public static void main(String[] args){
@@ -6,7 +7,7 @@ public class NN {
         Value w1 = new Value(-3, "w1");
         Value x2 = new Value(0, "x2");
         Value w2 = new Value(1, "w2");
-        Value b = new Value(6.7, "b");
+        Value b = new Value(6.8814, "b");
 
         Value x1w1 = x1.mul(w1); x1w1.label = "x1w1";
         Value x2w2 = x2.mul(w2); x2w2.label = "x2w2";
@@ -25,8 +26,25 @@ public class NN {
         
         //System.out.println("Before tanh(): " + n);
         Value out = n.tanh(); out.label = "tanh";
-        // System.out.println("Child and operation of out: " + out.prev[0].label + " " + out.op);
+        ListIterator<Value> lst = out.prev.listIterator();
+        //System.out.println("Child and operation of out: " + lst.next().label + " " + out.op + "Children index: " + out.i);
 
-        System.out.println(out);
+        //System.out.println(out);
+        out.bkWrdInitial();
+        n.bkWrdInitial();
+        // x1w1x2w2.bkWrdInitial();
+        // x1w1.bkWrdInitial();
+        // x2w2.bkWrdInitial();
+
+        System.out.println("Gradient of " + n.label + ": " + String.format("%.4f", n.grad));
+        System.out.println("Gradient of " + x1w1x2w2.label + ": " + String.format("%.4f", x1w1x2w2.grad));
+        System.out.println("Gradient of " + x1w1.label + ": " + String.format("%.4f", x1w1.grad));
+        System.out.println("Gradient of " + x2w2.label + ": " + String.format("%.4f", x2w2.grad));
+        System.out.println("Gradient of " + b.label + ": " + String.format("%.4f", b.grad));
+        System.out.println("Gradient of " + x1.label + ": " + String.format("%.4f", x1.grad));
+        System.out.println("Gradient of " + w1.label + ": " + String.format("%.4f", w1.grad));
+        System.out.println("Gradient of " + x2.label + ": " + String.format("%.4f", x2.grad));
+        System.out.println("Gradient of " + w2.label + ": " + String.format("%.4f", w2.grad));
+
     }
 }
