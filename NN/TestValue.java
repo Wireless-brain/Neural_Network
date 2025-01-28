@@ -27,7 +27,7 @@ class Value{
     @Override
     public String toString(){
         //return this.label + "=" + String.format("%.4f", data);
-        return "Value=" + String.format("%.4f", this.data) + "Grad=" + String.format("%.4f", this.grad);
+        return "Value=" + String.format("%.4f", this.data) + " Grad=" + String.format("%.4f", this.grad);
     }
 
     public Value add(Value a){
@@ -59,6 +59,7 @@ class Value{
             System.out.println("Error: Division by zero is not possible.");
             return null;
         }
+
         Value out = new Value(this.data / a.data);
         out.prev.add(a);
         out.prev.add(this);
@@ -176,6 +177,16 @@ class Neuron{
         Value out = act.tanh();
         return out;
     }
+
+    public ArrayList<Value> parameters(){
+        ArrayList<Value> p = new ArrayList<>();
+        // for (int i=0; i<this.w.size(); i++){
+        //     p.add(w.get(i));
+        // }
+        p.addAll(this.w);
+        p.add(b);
+        return p;
+    }
 }
 
 class Layer{
@@ -184,17 +195,30 @@ class Layer{
     Layer(int nin, int nout){
         for(int i=0; i<nout; i++){
             //Value temp = new Value((random.nextDouble() * 2) - 1);
-            neurons.add(new Neuron(nin));
+            this.neurons.add(new Neuron(nin));
         }
     }
 
     ArrayList<Value> call(ArrayList<Value> x){
         ArrayList<Value> out = new ArrayList<>();
         for (int i=0; i<this.neurons.size(); i++){
-            out.add(neurons.get(i).call(x));
+            out.add(this.neurons.get(i).call(x));
         }
         return out;
     }
+
+    public ArrayList<Value> parameters(){
+        ArrayList<Value> q = new ArrayList<>();
+        //ArrayList<Value> p;
+        for (int i=0; i<this.neurons.size(); i++){
+            q.addAll(neurons.get(i).parameters());
+            // for (int j=0; j<p.size(); j++){
+            //     q.add(p.get(j));
+            // }
+        }
+        return q;
+    }
+
 }
 
 class MLP{
@@ -202,9 +226,13 @@ class MLP{
     
     MLP(int nin, int[] nouts){
         this.layers.add(new Layer(nin, nouts[0]));
-        for (int i=1; i<nouts.length-1; i++){
+        //System.out.println("At creation, number of layers: " + this.layers.size());
+        for (int i=0; i<nouts.length-1; i++){
             layers.add(new Layer(nouts[i], nouts[i+1]));
+            //System.out.println("At creation, number of layers: " + this.layers.size());
         }
+
+        //System.out.println("At creation, number of layers: " + this.layers.size());
     }
 
     ArrayList<Value> call(ArrayList<Value> x){
@@ -212,6 +240,18 @@ class MLP{
             x = this.layers.get(i).call(x);
         }
         return x;
+    }
+
+    public ArrayList<Value> parameters(){
+        ArrayList<Value> q = new ArrayList<>();
+        for (int i=0; i<this.layers.size(); i++){
+            q.addAll(layers.get(i).parameters());
+            // for (int j=0; j<p.size(); j++){
+            //     q.add(p.get(j));
+            // }
+            //System.out.println("Layerwise parameter number: " + q.size());
+        }
+        return q;
     }
 }
 
@@ -255,7 +295,7 @@ public class TestValue{
 
         int [] nouts = {4, 4, 1};
         MLP n = new MLP(3, nouts);
-        System.out.println("Training data: " + xs);
+        //System.out.println("Training data: " + xs);
         //ArrayList<Value> yPredAct = new ArrayList<>();
         ArrayList<Value> ypred = new ArrayList<>();
 
@@ -275,11 +315,43 @@ public class TestValue{
         System.out.println("Loss value: " + loss);
 
         loss.backward();
+        //System.out.println("Loss value: " + loss);
 
-        System.out.println("Predictions: " + ypred);
-        System.out.println("Loss value: " + loss);
+        double lr = 0.1, sum1 = 0, val1 = 0;
 
+        ArrayList<Value> p = n.parameters();
+        Value v1;
+        for (int i=0; i<10; i++){
+            for (int j=0; j<p.size(); j++){
+                v1 = p.get(j);
+                v1.data += -lr*v1.grad;
+                v1.grad = 0;
+            }
 
+            for (int k=0; k<xs.size(); k++){
+                //ypred.add(new ArrayList<Value>());
+                //yPresAct.add
+                ypred.add(n.call(xs.get(k)).get(0));
+            }
+
+            for (int l=0; l<ypred.size(); l++){
+                val1 = ypred.get(l).data - ys.get(l).data;
+                sum1 += val1*val1;
+            }
+
+            loss.data = sum1;
+            System.out.println("Loss: " + sum1);
+
+        }
+
+        
+
+        System.out.println("Predictions new: " + ypred);
+        //System.out.println("Loss value: " + loss);
+
+        //System.out.println("Parameter size: " + n.parameters().size());
+
+        //System.out.println(n.layers.size());
 
     }
 }
