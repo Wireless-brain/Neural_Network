@@ -1,10 +1,12 @@
 package NN;
 
 import java.lang.Math;
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 public class Value{
     double data;
@@ -115,5 +117,26 @@ public class Value{
         for (int i = topo.size()-1; i >-1; i--) {
             topo.get(i)._backward();
           }
+    }
+}
+
+class Neuron{
+    ArrayList<Value> w = new ArrayList<>(); 
+    Value b;
+    Neuron(int nin){
+        Random random = new Random();
+        // double randomValue = (random.nextDouble() * 2) - 1;
+        b = new Value((random.nextDouble() * 2) - 1);
+        for(int i=0; i<nin; i++){
+            Value temp = new Value((random.nextDouble() * 2) - 1);
+            w.add(temp);
+        }
+    }
+
+    Value call(ArrayList<double> x){
+
+        ListIterator<Value>
+
+        return out;
     }
 }
