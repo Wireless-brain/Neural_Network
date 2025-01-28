@@ -1,5 +1,4 @@
 import NN.Value;
-import java.util.ListIterator;
 
 public class NN {
     public static void main(String[] args){
@@ -26,25 +25,26 @@ public class NN {
         
         //System.out.println("Before tanh(): " + n);
         Value out = n.tanh(); out.label = "tanh";
-        ListIterator<Value> lst = out.prev.listIterator();
+        //ListIterator<Value> lst = out.prev.listIterator();
         //System.out.println("Child and operation of out: " + lst.next().label + " " + out.op + "Children index: " + out.i);
 
-        //System.out.println(out);
-        out.bkWrdInitial();
-        n.bkWrdInitial();
+        System.out.println(out);
+        out.backward();
+        //out.bkWrdInitial();
+        //n.bkWrdInitial();
         // x1w1x2w2.bkWrdInitial();
         // x1w1.bkWrdInitial();
         // x2w2.bkWrdInitial();
 
-        System.out.println("Gradient of " + n.label + ": " + String.format("%.4f", n.grad));
-        System.out.println("Gradient of " + x1w1x2w2.label + ": " + String.format("%.4f", x1w1x2w2.grad));
-        System.out.println("Gradient of " + x1w1.label + ": " + String.format("%.4f", x1w1.grad));
-        System.out.println("Gradient of " + x2w2.label + ": " + String.format("%.4f", x2w2.grad));
-        System.out.println("Gradient of " + b.label + ": " + String.format("%.4f", b.grad));
-        System.out.println("Gradient of " + x1.label + ": " + String.format("%.4f", x1.grad));
-        System.out.println("Gradient of " + w1.label + ": " + String.format("%.4f", w1.grad));
-        System.out.println("Gradient of " + x2.label + ": " + String.format("%.4f", x2.grad));
-        System.out.println("Gradient of " + w2.label + ": " + String.format("%.4f", w2.grad));
+        System.out.println("Gradient of " + n.label + ": " + String.format("%5.3f", n.grad));
+        System.out.println("Gradient of " + x1w1x2w2.label + ": " + String.format("%5.3f", x1w1x2w2.grad));
+        System.out.println("Gradient of " + x1w1.label + ": " + String.format("%5.3f", x1w1.grad));
+        System.out.println("Gradient of " + x2w2.label + ": " + String.format("%5.3f", x2w2.grad));
+        System.out.println("Gradient of " + b.label + ": " + String.format("%5.3f", b.grad));
+        System.out.println("Gradient of " + x1.label + ": " + String.format("%5.3f", x1.grad));
+        System.out.println("Gradient of " + w1.label + ": " + String.format("%5.3f", w1.grad));
+        System.out.println("Gradient of " + x2.label + ": " + String.format("%5.3f", x2.grad));
+        System.out.println("Gradient of " + w2.label + ": " + String.format("%5.3f", w2.grad));
 
     }
 }
