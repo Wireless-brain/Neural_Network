@@ -74,54 +74,6 @@ public class Value{
         return out;
     }
 
-    // public void bkWrdInitial(){
-    //     this.grad = 1.0;
-    //     TopoSort t = new TopoSort();
-
-    //     ArrayList<Value> topoLst = t.get_topo(this);
-    //     //ListIterator<Value> itr = topoLst.listIterator();
-    //     ArrayList<Value> revTopoLst = new ArrayList<Value>();
-
-    //     for(int i = topoLst.size()-1; i>=0; i--){
-    //         revTopoLst.add(topoLst.get(i));
-    //     }
-
-    //     ListIterator<Value> itr = revTopoLst.listIterator();
-    //     backward(this);
-    //     // while (itr.hasNext()){
-    //     //     //System.out.println(itr.next());
-    //     //     backward(itr.next());
-    //     // }
-    // }
-
-    // void backward(Value node){
-    //     ListIterator<Value> lst = node.prev.listIterator();
-    //     Value a;
-    //     Value b;
-
-    //     switch (node.op){
-    //         case "+": a = lst.next();
-    //                   b = lst.next();
-    //                   a.grad += 1.0 * node.grad;
-    //                   b.grad += 1.0 * node.grad;
-    //                   break;
-    //         case "-": a = lst.next();
-    //                   b = lst.next();
-    //                   a.grad += 1.0 * node.grad;
-    //                   b.grad += 1.0 * node.grad;
-    //                   break;
-    //         case "*": a = lst.next();
-    //                   b = lst.next();
-    //                   a.grad += b.data * node.grad;
-    //                   b.grad += a.data * node.grad;
-    //                   break;
-    //         case "/": break;
-    //         case "tanh": a = lst.next();
-    //                      a.grad += (1-(node.data * node.data)*node.grad);
-    //                      break;
-    //     }
-    // }
-
     void build_Topo(Value v){
         if(!visited.contains(v)){
             visited.add(v);
@@ -165,34 +117,3 @@ public class Value{
           }
     }
 }
-
-// class TopoSort{
-//     ArrayList<Value> topoLst = new ArrayList<Value>();
-//     HashSet<Value> visited = new HashSet<Value>();
-
-//     ArrayList<Value> get_topo(Value a){
-
-//         build_topo(a);
-//         return topoLst;
-//     }
-
-//     void build_topo(Value v){
-
-//         if (!visited.contains(v)){
-//             visited.add(v);
-//             //System.out.println("In visited: " + v);
-//             //System.out.println("Value of i: " + v.i);
-//             ListIterator<Value> lst = v.prev.listIterator();
-            
-//             while (lst.hasNext()){
-//                 Value ab = lst.next();
-//                 //System.out.println("Children of " + v + ": " + ab.label);
-//                 build_topo(ab);
-//             }
-//             //System.out.println(v);
-//             topoLst.add(v);
-//         }
-        
-//     }
-
-// }
