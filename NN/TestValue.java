@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 class Value{
     public double data;
     public double grad = 0;
     public String label = "";
     public String op = "";
-    public Set<Value> prev = new HashSet<>();
+    public ArrayList<Value> prev = new ArrayList<>();
     ArrayList<Value> topo = new ArrayList<>();
     Set<Value> visited = new HashSet<>();
 
@@ -26,7 +27,7 @@ class Value{
     @Override
     public String toString(){
         //return this.label + "=" + String.format("%.4f", data);
-        return "Value=" + String.format("%.4f", data);
+        return "Value=" + String.format("%.4f", this.data) + "Grad=" + String.format("%.4f", this.grad);
     }
 
     public Value add(Value a){
@@ -39,8 +40,8 @@ class Value{
 
     public Value sub(Value a){
         Value out = new Value(this.data - a.data);
-        out.prev.add(a);
         out.prev.add(this);
+        out.prev.add(a);
         out.op = "-";
         return out;
     }
@@ -98,20 +99,27 @@ class Value{
     }
 
     void _backward(){
-        Iterator<Value> it = prev.iterator();
+        ListIterator<Value> it = prev.listIterator();
+        
         Value v1, v2;
         switch (op) {
             case "+":
                 v1 = it.next(); 
                 v2 = it.next();
-                v1.grad+=1*this.grad;
-                v2.grad+=1*this.grad;
+                v1.grad += 1*this.grad;
+                v2.grad += 1*this.grad;
+                break;
+            case "-":
+                v1 = it.next();
+                v2 = it.next();
+                v1.grad += 1*this.grad;
+                v2.grad += -1*this.grad;
                 break;
             case "*":
                 v1 = it.next(); 
                 v2 = it.next();
-                v1.grad+=v2.data*this.grad;
-                v2.grad+=v1.data*this.grad;
+                v1.grad += v2.data*this.grad;
+                v2.grad += v1.data*this.grad;
                 break;
             case "tanh":
                 v1 = it.next(); 
@@ -137,7 +145,7 @@ class Value{
 }
 
 class Neuron{
-    ArrayList<Value> w = new ArrayList<>(); 
+    public ArrayList<Value> w = new ArrayList<>(); 
     Value b;
     public Neuron(int nin){
         Random random = new Random();
@@ -149,14 +157,14 @@ class Neuron{
         }
     }
 
-    ArrayList<Value> makeVal(double[] x){
+    // ArrayList<Value> makeVal(double[] x){
         
-        ArrayList<Value> dub = new ArrayList<>();
-        for(int i = 0; i<x.length; i++){
-            dub.add(new Value(x[i]));
-        }
-        return dub;
-    }
+    //     ArrayList<Value> dub = new ArrayList<>();
+    //     for(int i = 0; i<x.length; i++){
+    //         dub.add(new Value(x[i]));
+    //     }
+    //     return dub;
+    // }
 
     public Value call(ArrayList<Value> x){
 
@@ -171,7 +179,7 @@ class Neuron{
 }
 
 class Layer{
-    ArrayList<Neuron> neurons = new ArrayList<>();
+    public ArrayList<Neuron> neurons = new ArrayList<>();
     
     Layer(int nin, int nout){
         for(int i=0; i<nout; i++){
@@ -185,13 +193,12 @@ class Layer{
         for (int i=0; i<this.neurons.size(); i++){
             out.add(neurons.get(i).call(x));
         }
-
         return out;
     }
 }
 
 class MLP{
-    ArrayList<Layer> layers = new ArrayList<>();
+    public ArrayList<Layer> layers = new ArrayList<>();
     
     MLP(int nin, int[] nouts){
         this.layers.add(new Layer(nin, nouts[0]));
@@ -238,8 +245,13 @@ public class TestValue{
         xs.get(3).add(0, new Value(1.0));
         xs.get(3).add(1, new Value(1.0));
         xs.get(3).add(2, new Value(-1.0));
-
-        double[] ys = {1.0, -1.0, -1.0, 1.0};
+        
+        ArrayList<Value> ys = new ArrayList<>();
+        ys.add(new Value(1.0));
+        ys.add(new Value(-1.0));
+        ys.add(new Value(-1.0));
+        ys.add(new Value(1.0));
+        //double[] ys = {1.0, -1.0, -1.0, 1.0};
 
         int [] nouts = {4, 4, 1};
         MLP n = new MLP(3, nouts);
@@ -253,12 +265,21 @@ public class TestValue{
             ypred.add(n.call(xs.get(i)).get(0));
         }
 
+        Value loss = new Value(0);
+
         for (int i=0; i<ypred.size(); i++){
-            
+            loss = loss.add((ypred.get(i).sub(ys.get(i))).exp(2));
         }
 
+        System.out.println("Predictions: " + ypred);
+        System.out.println("Loss value: " + loss);
 
+        loss.backward();
 
         System.out.println("Predictions: " + ypred);
+        System.out.println("Loss value: " + loss);
+
+
+
     }
 }
