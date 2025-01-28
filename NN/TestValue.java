@@ -1,15 +1,12 @@
-package NN;
-
 import java.lang.Math;
 import java.util.Random;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.ListIterator;
 
-public class Value{
-    double data;
+class Value{
+    public double data;
     public double grad = 0;
     public String label = "";
     public String op = "";
@@ -28,7 +25,8 @@ public class Value{
 
     @Override
     public String toString(){
-        return this.label + "=" + String.format("%.4f", data);
+        //return this.label + "=" + String.format("%.4f", data);
+        return "Value=" + String.format("%.4f", data);
     }
 
     public Value add(Value a){
@@ -123,20 +121,41 @@ public class Value{
 class Neuron{
     ArrayList<Value> w = new ArrayList<>(); 
     Value b;
-    Neuron(int nin){
+    public Neuron(int nin){
         Random random = new Random();
         // double randomValue = (random.nextDouble() * 2) - 1;
         b = new Value((random.nextDouble() * 2) - 1);
         for(int i=0; i<nin; i++){
-            Value temp = new Value((random.nextDouble() * 2) - 1);
-            w.add(temp);
+            //Value temp = new Value((random.nextDouble() * 2) - 1);
+            w.add(new Value((random.nextDouble() * 2) - 1));
         }
     }
 
-    Value call(ArrayList<double> x){
+    ArrayList<Value> makeVal(double[] x){
+        
+        ArrayList<Value> dub = new ArrayList<>();
+        for(int i = 0; i<x.length; i++){
+            dub.add(new Value(x[i]));
+        }
+        return dub;
+    }
 
-        ListIterator<Value>
+    public Value call(double[] x1){
 
+        ArrayList<Value> x = makeVal(x1);
+        Value act = new Value(0);
+        for (int i=0; i<x.size(); i++){
+            act.data += this.w.get(i).data + x.get(i).data;
+        }
+        Value out = act.tanh();
         return out;
+    }
+}
+
+public class TestValue{
+    public static void main(String[] args){
+        double[] x = {2.0, 3.0};
+        Neuron n = new Neuron(2);
+        System.out.println(n.call(x));
     }
 }

@@ -1,20 +1,20 @@
-import NN.Value;
+//import NN.TestValue;
 
 public class NN {
     public static void main(String[] args){
-        Value x1 = new Value(2, "x1");
-        Value w1 = new Value(-3, "w1");
-        Value x2 = new Value(0, "x2");
-        Value w2 = new Value(1, "w2");
-        Value b = new Value(6.8814, "b");
+        TestValue x1 = new TestValue(2, "x1");
+        TestValue w1 = new TestValue(-3, "w1");
+        TestValue x2 = new TestValue(0, "x2");
+        TestValue w2 = new TestValue(1, "w2");
+        TestValue b = new TestValue(6.8814, "b");
 
-        Value x1w1 = x1.mul(w1); x1w1.label = "x1w1";
-        Value x2w2 = x2.mul(w2); x2w2.label = "x2w2";
-        Value x1w1x2w2 = x1w1.add(x2w2); x1w1x2w2.label = "x1w1x2w2";
+        TestValue x1w1 = x1.mul(w1); x1w1.label = "x1w1";
+        TestValue x2w2 = x2.mul(w2); x2w2.label = "x2w2";
+        TestValue x1w1x2w2 = x1w1.add(x2w2); x1w1x2w2.label = "x1w1x2w2";
 
-        Value n = x1w1x2w2.add(b); n.label = "n";
+        TestValue n = x1w1x2w2.add(b); n.label = "n";
         
-        Value out = n.tanh(); out.label = "tanh";
+        TestValue out = n.tanh(); out.label = "tanh";
 
         System.out.println(out);
         out.backward();
