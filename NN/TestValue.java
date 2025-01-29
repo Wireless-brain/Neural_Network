@@ -8,11 +8,11 @@ import java.util.ListIterator;
 import java.util.Scanner;
 
 class Value{
-    public double data;
-    public double grad = 0;
-    public String label = "";
-    public String op = "";
-    public ArrayList<Value> prev = new ArrayList<>();
+    double data;
+    double grad = 0;
+    String label = "";
+    String op = "";
+    ArrayList<Value> prev = new ArrayList<>();
     ArrayList<Value> topo = new ArrayList<>();
     Set<Value> visited = new HashSet<>();
 
@@ -27,8 +27,7 @@ class Value{
 
     @Override
     public String toString(){
-        //return this.label + "=" + String.format("%.4f", data);
-        return "Value=" + String.format("%.4f", this.data) + " Grad=" + String.format("%.4f", this.grad);
+        return this.label + "=" + String.format("%.4f", data);
     }
 
     public Value add(Value a){
@@ -78,9 +77,6 @@ class Value{
     }
 
     Value exp(double b){
-        //Set<Value> children=new HashSet<>();
-        // children.add(this);
-        // children.add(new Value(b, Label));
         Value out = new Value(Math.pow(this.data, b));
         out.prev.add(this);
         out.prev.add(new Value(b));
@@ -151,26 +147,13 @@ class Neuron{
     Value b;
     public Neuron(int nin){
         Random random = new Random();
-        // double randomValue = (random.nextDouble() * 2) - 1;
         this.b = new Value((random.nextDouble() * 2) - 1);
         for(int i=0; i<nin; i++){
-            //Value temp = new Value((random.nextDouble() * 2) - 1);
             this.w.add(new Value((random.nextDouble() * 2) - 1));
         }
     }
 
-    // ArrayList<Value> makeVal(double[] x){
-        
-    //     ArrayList<Value> dub = new ArrayList<>();
-    //     for(int i = 0; i<x.length; i++){
-    //         dub.add(new Value(x[i]));
-    //     }
-    //     return dub;
-    // }
-
     public Value call(ArrayList<Value> x){
-
-        //ArrayList<Value> x = makeVal(x1);
         Value act = new Value(0);
         for (int i=0; i<x.size(); i++){
             act = act.add(this.w.get(i).mul(x.get(i)));
@@ -181,9 +164,6 @@ class Neuron{
 
     public ArrayList<Value> parameters(){
         ArrayList<Value> p = new ArrayList<>();
-        // for (int i=0; i<this.w.size(); i++){
-        //     p.add(w.get(i));
-        // }
         p.addAll(this.w);
         p.add(b);
         return p;
@@ -195,7 +175,6 @@ class Layer{
     
     Layer(int nin, int nout){
         for(int i=0; i<nout; i++){
-            //Value temp = new Value((random.nextDouble() * 2) - 1);
             this.neurons.add(new Neuron(nin));
         }
     }
@@ -210,12 +189,8 @@ class Layer{
 
     public ArrayList<Value> parameters(){
         ArrayList<Value> q = new ArrayList<>();
-        //ArrayList<Value> p;
         for (int i=0; i<this.neurons.size(); i++){
             q.addAll(neurons.get(i).parameters());
-            // for (int j=0; j<p.size(); j++){
-            //     q.add(p.get(j));
-            // }
         }
         return q;
     }
@@ -227,13 +202,9 @@ class MLP{
     
     MLP(int nin, int[] nouts){
         this.layers.add(new Layer(nin, nouts[0]));
-        //System.out.println("At creation, number of layers: " + this.layers.size());
         for (int i=0; i<nouts.length-1; i++){
             layers.add(new Layer(nouts[i], nouts[i+1]));
-            //System.out.println("At creation, number of layers: " + this.layers.size());
         }
-
-        //System.out.println("At creation, number of layers: " + this.layers.size());
     }
 
     ArrayList<Value> call(ArrayList<Value> x){
@@ -247,10 +218,6 @@ class MLP{
         ArrayList<Value> q = new ArrayList<>();
         for (int i=0; i<this.layers.size(); i++){
             q.addAll(layers.get(i).parameters());
-            // for (int j=0; j<p.size(); j++){
-            //     q.add(p.get(j));
-            // }
-            //System.out.println("Layerwise parameter number: " + q.size());
         }
         return q;
     }
@@ -263,8 +230,6 @@ public class TestValue{
         x.add(new Value(2.0));
         x.add(new Value(3.0));
         x.add(new Value(-1.0));
-
-        //Layer n = new Layer(2, 3);
 
         ArrayList<ArrayList<Value>> xs = new ArrayList<>();
         xs.add(new ArrayList<Value>());
@@ -292,95 +257,47 @@ public class TestValue{
         ys.add(new Value(-1.0));
         ys.add(new Value(-1.0));
         ys.add(new Value(1.0));
-        //double[] ys = {1.0, -1.0, -1.0, 1.0};
 
         int [] nouts = {4, 4, 1};
         MLP n = new MLP(3, nouts);
-        //System.out.println("Training data: " + xs);
-        //ArrayList<Value> yPredAct = new ArrayList<>();
-        ArrayList<Value> ypred = new ArrayList<>();// = new ArrayList<>();
+        ArrayList<Value> ypred = new ArrayList<>();
 
-        // for (int i=0; i<xs.size(); i++){
-        //     //ypred.add(new ArrayList<Value>());
-        //     //yPresAct.add
-        //     ypred.add(n.call(xs.get(i)).get(0));
-        // }
+        Value loss;
 
-        Value loss; //= new Value(0);// = new Value(0);
-
-        // for (int i=0; i<ypred.size(); i++){
-        //     loss = loss.add((ypred.get(i).sub(ys.get(i))).exp(2));
-        // }
-
-        // System.out.println("Predictions: " + ypred);
-        // System.out.println("Loss value: " + loss);
-
-        // loss.backward();
-        // System.out.println("Predictions after back: " + ypred);
-        // System.out.println("Loss value after back: " + loss);
-
-        double lr = 0.5;// sum1 = 0, val1 = 0;
+        double lr = 0.5;
+        int start = 0;
         Scanner sc = new Scanner(System.in);
         int cntnue = 0;
 
-        ArrayList<Value> p;// = n.parameters();
-        // for (Value p1: p){
-        //     System.out.println("Before updation: " + p1.data + " Grad: " + p1.grad);
-        // }
+        ArrayList<Value> p;
         Value v1;
-
-        //for (int i=0; i<20; i++){
         do{
             for (int i=0; i<10; i++){
-                // p = n.parameters();
-                //System.out.println("Parameter size: " + p.size());
                 ypred = new ArrayList<>();
                 for (int j=0; j<xs.size(); j++){
-                    //ypred.add(new ArrayList<Value>());
-                    //yPresAct.add
                     ypred.add(n.call(xs.get(j)).get(0));
                 }
-                // System.out.println("Predictions new: " + ypred);
+
+                if (start == 0){
+                    System.out.println("Predictions new: " + ypred);
+                    start = 1;
+                }
+
                 loss = new Value(0);
                 for (int l=0; l<ypred.size(); l++){
                     loss = loss.add((ypred.get(l).sub(ys.get(l))).exp(2));
-                    //val1 = ypred.get(l).data - ys.get(l).data;
-                    //sum1 += val1*val1;
                 }
                 System.out.println("Loss new: " + loss.data);
                 loss.backward();
                 p = n.parameters();
                 for (int j=0; j<p.size(); j++){
                     v1 = p.get(j);
-                    //System.out.println("Before updation: " + v1.data + " Grad: " + v1.grad);
                     v1.data += -lr*v1.grad;
-                    //System.out.println("After updation: " + v1.data);
-
                 }
                 for (int j=0; j<p.size(); j++){
                     v1 = p.get(j);
                     v1.grad = 0;
                 }
-                // ypred = new ArrayList<>();
-                // for (int k=0; k<xs.size(); k++){
-                //     //ypred.add(new ArrayList<Value>());
-                //     //yPresAct.add
-                //     ypred.add(n.call(xs.get(k)).get(0));
-                // }
-                // loss = new Value(0);
-                // for (int l=0; l<ypred.size(); l++){
-                //     loss = loss.add((ypred.get(l).sub(ys.get(l))).exp(2));
-                //     //val1 = ypred.get(l).data - ys.get(l).data;
-                //     //sum1 += val1*val1;
-                // }
-
-                //loss.data = sum1;
-                // for (int j=0; j<p.size(); j++){
-                //     v1 = p.get(j);
-                //     v1.grad = 0;
-                // }
-                //loss.backward();
-                // System.out.println("Loss: " + loss.data);
             }
             System.out.print("\n\tContinue or not(0/1): ");
             cntnue = sc.nextInt();
@@ -390,13 +307,5 @@ public class TestValue{
             }
 
         }while (cntnue == 0);
-
-        // System.out.println("Predictions new: " + ypred);
-        //System.out.println("Loss value: " + loss);
-
-        //System.out.println("Parameter size: " + n.parameters().size());
-
-        //System.out.println(n.layers.size());
-
     }
 }
