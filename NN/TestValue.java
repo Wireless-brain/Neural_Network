@@ -335,7 +335,7 @@ public class TestValue{
                 //yPresAct.add
                 ypred.add(n.call(xs.get(j)).get(0));
             }
-            System.out.println("Predictions new: " + ypred);
+            // System.out.println("Predictions new: " + ypred);
             loss = new Value(0);
             for (int l=0; l<ypred.size(); l++){
                 loss = loss.add((ypred.get(l).sub(ys.get(l))).exp(2));
@@ -376,6 +376,10 @@ public class TestValue{
             // }
             //loss.backward();
             // System.out.println("Loss: " + loss.data);
+
+            if (i == 19){
+                System.out.println("Predictions new: " + ypred);
+            }
 
         }
 
