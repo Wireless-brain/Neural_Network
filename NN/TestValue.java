@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.Scanner;
 
 class Value{
     public double data;
@@ -297,7 +298,7 @@ public class TestValue{
         MLP n = new MLP(3, nouts);
         //System.out.println("Training data: " + xs);
         //ArrayList<Value> yPredAct = new ArrayList<>();
-        ArrayList<Value> ypred;// = new ArrayList<>();
+        ArrayList<Value> ypred = new ArrayList<>();// = new ArrayList<>();
 
         // for (int i=0; i<xs.size(); i++){
         //     //ypred.add(new ArrayList<Value>());
@@ -319,6 +320,8 @@ public class TestValue{
         // System.out.println("Loss value after back: " + loss);
 
         double lr = 0.5;// sum1 = 0, val1 = 0;
+        Scanner sc = new Scanner(System.in);
+        int cntnue = 0;
 
         ArrayList<Value> p;// = n.parameters();
         // for (Value p1: p){
@@ -326,62 +329,67 @@ public class TestValue{
         // }
         Value v1;
 
-        for (int i=0; i<20; i++){
-            // p = n.parameters();
-            //System.out.println("Parameter size: " + p.size());
-            ypred = new ArrayList<>();
-            for (int j=0; j<xs.size(); j++){
-                //ypred.add(new ArrayList<Value>());
-                //yPresAct.add
-                ypred.add(n.call(xs.get(j)).get(0));
-            }
-            // System.out.println("Predictions new: " + ypred);
-            loss = new Value(0);
-            for (int l=0; l<ypred.size(); l++){
-                loss = loss.add((ypred.get(l).sub(ys.get(l))).exp(2));
-                //val1 = ypred.get(l).data - ys.get(l).data;
-                //sum1 += val1*val1;
-            }
-            System.out.println("Loss new: " + loss.data);
-            loss.backward();
-            p = n.parameters();
-            for (int j=0; j<p.size(); j++){
-                v1 = p.get(j);
-                //System.out.println("Before updation: " + v1.data + " Grad: " + v1.grad);
-                v1.data += -lr*v1.grad;
-                //System.out.println("After updation: " + v1.data);
+        //for (int i=0; i<20; i++){
+        do{
+            for (int i=0; i<10; i++){
+                // p = n.parameters();
+                //System.out.println("Parameter size: " + p.size());
+                ypred = new ArrayList<>();
+                for (int j=0; j<xs.size(); j++){
+                    //ypred.add(new ArrayList<Value>());
+                    //yPresAct.add
+                    ypred.add(n.call(xs.get(j)).get(0));
+                }
+                // System.out.println("Predictions new: " + ypred);
+                loss = new Value(0);
+                for (int l=0; l<ypred.size(); l++){
+                    loss = loss.add((ypred.get(l).sub(ys.get(l))).exp(2));
+                    //val1 = ypred.get(l).data - ys.get(l).data;
+                    //sum1 += val1*val1;
+                }
+                System.out.println("Loss new: " + loss.data);
+                loss.backward();
+                p = n.parameters();
+                for (int j=0; j<p.size(); j++){
+                    v1 = p.get(j);
+                    //System.out.println("Before updation: " + v1.data + " Grad: " + v1.grad);
+                    v1.data += -lr*v1.grad;
+                    //System.out.println("After updation: " + v1.data);
 
-            }
-            for (int j=0; j<p.size(); j++){
-                v1 = p.get(j);
-                v1.grad = 0;
-            }
-            // ypred = new ArrayList<>();
-            // for (int k=0; k<xs.size(); k++){
-            //     //ypred.add(new ArrayList<Value>());
-            //     //yPresAct.add
-            //     ypred.add(n.call(xs.get(k)).get(0));
-            // }
-            // loss = new Value(0);
-            // for (int l=0; l<ypred.size(); l++){
-            //     loss = loss.add((ypred.get(l).sub(ys.get(l))).exp(2));
-            //     //val1 = ypred.get(l).data - ys.get(l).data;
-            //     //sum1 += val1*val1;
-            // }
+                }
+                for (int j=0; j<p.size(); j++){
+                    v1 = p.get(j);
+                    v1.grad = 0;
+                }
+                // ypred = new ArrayList<>();
+                // for (int k=0; k<xs.size(); k++){
+                //     //ypred.add(new ArrayList<Value>());
+                //     //yPresAct.add
+                //     ypred.add(n.call(xs.get(k)).get(0));
+                // }
+                // loss = new Value(0);
+                // for (int l=0; l<ypred.size(); l++){
+                //     loss = loss.add((ypred.get(l).sub(ys.get(l))).exp(2));
+                //     //val1 = ypred.get(l).data - ys.get(l).data;
+                //     //sum1 += val1*val1;
+                // }
 
-            //loss.data = sum1;
-            // for (int j=0; j<p.size(); j++){
-            //     v1 = p.get(j);
-            //     v1.grad = 0;
-            // }
-            //loss.backward();
-            // System.out.println("Loss: " + loss.data);
+                //loss.data = sum1;
+                // for (int j=0; j<p.size(); j++){
+                //     v1 = p.get(j);
+                //     v1.grad = 0;
+                // }
+                //loss.backward();
+                // System.out.println("Loss: " + loss.data);
+            }
+            System.out.print("\n\tContinue or not(0/1): ");
+            cntnue = sc.nextInt();
 
-            if (i == 19){
+            if (cntnue == 1){
                 System.out.println("Predictions new: " + ypred);
             }
 
-        }
+        }while (cntnue == 0);
 
         // System.out.println("Predictions new: " + ypred);
         //System.out.println("Loss value: " + loss);
