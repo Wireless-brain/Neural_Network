@@ -267,12 +267,12 @@ public class TestValue{
         double lr = 0.5;
         int start = 0;
         Scanner sc = new Scanner(System.in);
-        int cntnue = 0;
+        int cntnue = 0, epoch = 100;
 
         ArrayList<Value> p;
         Value v1;
         do{
-            for (int i=0; i<10; i++){
+            for (int i=0; i<epoch; i++){
                 ypred = new ArrayList<>();
                 for (int j=0; j<xs.size(); j++){
                     ypred.add(n.call(xs.get(j)).get(0));
