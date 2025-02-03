@@ -69,7 +69,7 @@ public class Mlp{
         }
     }
 
-    ArrayList<Value> call(ArrayList<Value> x){
+    public ArrayList<Value> call(ArrayList<Value> x){
         for (int i=0; i<this.layers.size(); i++){
             x = this.layers.get(i).call(x);
         }
